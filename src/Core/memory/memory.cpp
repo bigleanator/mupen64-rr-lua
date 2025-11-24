@@ -3220,6 +3220,8 @@ void write_flashram_commandd()
 
 static uint32_t lastwrite = 0;
 
+#define CART_ROM_ADDR_MASK (uint32_t)(0x0FFFFFFF)
+
 void read_rom()
 {
     if (lastwrite)
@@ -3228,23 +3230,23 @@ void read_rom()
         lastwrite = 0;
     }
     else
-        *rdword = *((uint32_t *)(rom + (address & 0x03FFFFFF)));
+        *rdword = *((uint32_t *)(rom + (address & CART_ROM_ADDR_MASK)));
 }
 
 void read_romb()
 {
-    *rdword = *(rom + ((address ^ S8) & 0x03FFFFFF));
+    *rdword = *(rom + ((address ^ S8) & CART_ROM_ADDR_MASK));
 }
 
 void read_romh()
 {
-    *rdword = *((uint16_t *)(rom + ((address ^ S16) & 0x03FFFFFF)));
+    *rdword = *((uint16_t *)(rom + ((address ^ S16) & CART_ROM_ADDR_MASK)));
 }
 
 void read_romd()
 {
-    *rdword = ((uint64_t)(*((uint32_t *)(rom + (address & 0x03FFFFFF)))) << 32) |
-              *((uint32_t *)(rom + ((address + 4) & 0x03FFFFFF)));
+    *rdword = ((uint64_t)(*((uint32_t *)(rom + (address & CART_ROM_ADDR_MASK)))) << 32) |
+              *((uint32_t *)(rom + ((address + 4) & CART_ROM_ADDR_MASK)));
 }
 
 void write_rom()
