@@ -17,6 +17,7 @@
 #include <r4300/r4300.h>
 #include <r4300/rom.h>
 #include <r4300/tracelog.h>
+#include <alloc.h>
 
 uint32_t interp_addr;
 uint32_t vr_op;
@@ -3072,7 +3073,7 @@ void pure_interpreter()
 {
     interp_addr = 0xa4000040;
     stop = 0;
-    PC = (precomp_instr *)malloc(sizeof(precomp_instr));
+    PC = (precomp_instr *)malloc_exec(sizeof(precomp_instr));
     last_addr = interp_addr;
     core_executing = true;
     g_core->callbacks.core_executing_changed(core_executing);
@@ -3095,7 +3096,7 @@ void pure_interpreter()
 void interprete_section(uint32_t addr)
 {
     interp_addr = addr;
-    PC = (precomp_instr *)malloc(sizeof(precomp_instr));
+    PC = (precomp_instr *)malloc_exec(sizeof(precomp_instr));
     last_addr = interp_addr;
     while (!stop && (addr >> 12) == (interp_addr >> 12))
     {

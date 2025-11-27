@@ -1546,7 +1546,7 @@ inline void jump_to_func()
     {
         if (!blocks[addr >> 12])
         {
-            blocks[addr >> 12] = (precomp_block *)malloc(sizeof(precomp_block));
+            blocks[addr >> 12] = (precomp_block *)malloc_exec(sizeof(precomp_block));
             actual = blocks[addr >> 12];
             blocks[addr >> 12]->code = NULL;
             blocks[addr >> 12]->block = NULL;
@@ -1602,7 +1602,7 @@ void init_blocks()
         invalid_code[i] = 1;
         blocks[i] = NULL;
     }
-    blocks[0xa4000000 >> 12] = (precomp_block *)malloc(sizeof(precomp_block));
+    blocks[0xa4000000 >> 12] = (precomp_block *)malloc_exec(sizeof(precomp_block));
     invalid_code[0xa4000000 >> 12] = 1;
     blocks[0xa4000000 >> 12]->code = NULL;
     blocks[0xa4000000 >> 12]->block = NULL;
@@ -1924,7 +1924,7 @@ void core_start()
         {
             if (blocks[i]->block)
             {
-                free(blocks[i]->block);
+                free_exec(blocks[i]->block);
                 blocks[i]->block = NULL;
             }
             if (blocks[i]->code)
@@ -1934,14 +1934,14 @@ void core_start()
             }
             if (blocks[i]->jumps_table)
             {
-                free(blocks[i]->jumps_table);
+                free_exec(blocks[i]->jumps_table);
                 blocks[i]->jumps_table = NULL;
             }
-            free(blocks[i]);
+            free_exec(blocks[i]);
             blocks[i] = NULL;
         }
     }
-    if (!dynacore && interpcore) free(PC);
+    if (!dynacore && interpcore) free_exec(PC);
     core_executing = false;
     g_core->callbacks.core_executing_changed(core_executing);
 }

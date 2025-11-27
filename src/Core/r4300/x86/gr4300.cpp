@@ -1695,6 +1695,7 @@ void genswr()
 }
 
 #include <malloc.h>
+#include <alloc.h>
 
 inline void put8gr(unsigned char octet)
 {
@@ -1703,7 +1704,7 @@ inline void put8gr(unsigned char octet)
     if (code_length == max_code_length)
     {
         max_code_length += JUMP_TABLE_SIZE;
-        *inst_pointer = (unsigned char *)realloc(*inst_pointer, max_code_length);
+        *inst_pointer = (unsigned char *)realloc_exec(*inst_pointer, code_length, max_code_length);
     }
 }
 

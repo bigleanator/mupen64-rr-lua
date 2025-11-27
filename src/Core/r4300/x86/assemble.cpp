@@ -30,7 +30,7 @@ void init_assembler(void *block_jumps_table, int32_t block_jumps_number)
     }
     else
     {
-        jumps_table = (jump_table *)malloc(JUMP_TABLE_SIZE * sizeof(jump_table));
+        jumps_table = (jump_table *)malloc_exec(JUMP_TABLE_SIZE * sizeof(jump_table));
         jumps_number = 0;
         max_jumps_number = JUMP_TABLE_SIZE;
     }
@@ -47,7 +47,7 @@ static void add_jump(uint32_t pc_addr, uint32_t mi_addr)
     if (jumps_number == max_jumps_number)
     {
         max_jumps_number += JUMP_TABLE_SIZE;
-        jumps_table = (jump_table *)realloc(jumps_table, max_jumps_number * sizeof(jump_table));
+        jumps_table = (jump_table *)realloc_exec(jumps_table, jumps_number * sizeof(jump_table), max_jumps_number * sizeof(jump_table));
     }
     jumps_table[jumps_number].pc_addr = pc_addr;
     jumps_table[jumps_number].mi_addr = mi_addr;

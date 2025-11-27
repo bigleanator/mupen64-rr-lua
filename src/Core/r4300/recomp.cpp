@@ -2772,7 +2772,7 @@ void init_block(int32_t *source, precomp_block *block)
 
     if (!block->block)
     {
-        block->block = (precomp_instr *)malloc(((length + 1) + (length >> 2)) * sizeof(precomp_instr));
+        block->block = (precomp_instr *)malloc_exec(((length + 1) + (length >> 2)) * sizeof(precomp_instr));
         already_exist = 0;
     }
     #ifdef MUPEN64RR_ENABLE_DYNAREC
@@ -2790,7 +2790,7 @@ void init_block(int32_t *source, precomp_block *block)
 
         if (block->jumps_table)
         {
-            free(block->jumps_table);
+            free_exec(block->jumps_table);
             block->jumps_table = NULL;
         }
         init_assembler(NULL, 0);
@@ -2844,7 +2844,7 @@ void init_block(int32_t *source, precomp_block *block)
         invalid_code[paddr >> 12] = 0;
         if (!blocks[paddr >> 12])
         {
-            blocks[paddr >> 12] = (precomp_block *)malloc(sizeof(precomp_block));
+            blocks[paddr >> 12] = (precomp_block *)malloc_exec(sizeof(precomp_block));
             blocks[paddr >> 12]->code = NULL;
             blocks[paddr >> 12]->block = NULL;
             blocks[paddr >> 12]->jumps_table = NULL;
@@ -2857,7 +2857,7 @@ void init_block(int32_t *source, precomp_block *block)
         invalid_code[paddr >> 12] = 0;
         if (!blocks[paddr >> 12])
         {
-            blocks[paddr >> 12] = (precomp_block *)malloc(sizeof(precomp_block));
+            blocks[paddr >> 12] = (precomp_block *)malloc_exec(sizeof(precomp_block));
             blocks[paddr >> 12]->code = NULL;
             blocks[paddr >> 12]->block = NULL;
             blocks[paddr >> 12]->jumps_table = NULL;
@@ -2872,7 +2872,7 @@ void init_block(int32_t *source, precomp_block *block)
         {
             if (!blocks[(block->start + 0x20000000) >> 12])
             {
-                blocks[(block->start + 0x20000000) >> 12] = (precomp_block *)malloc(sizeof(precomp_block));
+                blocks[(block->start + 0x20000000) >> 12] = (precomp_block *)malloc_exec(sizeof(precomp_block));
                 blocks[(block->start + 0x20000000) >> 12]->code = NULL;
                 blocks[(block->start + 0x20000000) >> 12]->block = NULL;
                 blocks[(block->start + 0x20000000) >> 12]->jumps_table = NULL;
@@ -2885,7 +2885,7 @@ void init_block(int32_t *source, precomp_block *block)
         {
             if (!blocks[(block->start - 0x20000000) >> 12])
             {
-                blocks[(block->start - 0x20000000) >> 12] = (precomp_block *)malloc(sizeof(precomp_block));
+                blocks[(block->start - 0x20000000) >> 12] = (precomp_block *)malloc_exec(sizeof(precomp_block));
                 blocks[(block->start - 0x20000000) >> 12]->code = NULL;
                 blocks[(block->start - 0x20000000) >> 12]->block = NULL;
                 blocks[(block->start - 0x20000000) >> 12]->jumps_table = NULL;
