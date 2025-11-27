@@ -187,3 +187,17 @@ target_compile_definitions(Mupen64RR.Views.Win32 PRIVATE
     # "SPDLOG_WCHAR_TO_UTF8_SUPPORT"
     "VERSION_SUFFIX=L\"${MUPEN64RR_VERSION_SUFFIX}\""
 )
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    target_compile_options(Mupen64RR.Views.Win32 PRIVATE
+        /guard:cf     # Control Flow Guard
+        /GS           # Stack cookies
+    )
+
+    target_link_options(Mupen64RR.Views.Win32 PRIVATE
+        /guard:cf       # Control Flow Guard
+        /NXCompat       # DEP
+        /DYNAMICBASE    # ASLR
+        $<$<EQUAL:${CMAKE_SIZEOF_VOID_P},4>:/SAFESEH> # 32-bit only
+    )
+endif()
