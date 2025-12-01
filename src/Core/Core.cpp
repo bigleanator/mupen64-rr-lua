@@ -33,36 +33,10 @@ extern "C"
     // ReSharper restore CppInconsistentNaming
 }
 
-static void log_dummy(std::string_view)
-{
-}
-
 core_result core_create(core_params *params, core_ctx **ctx)
 {
     g_core = params;
-
-    // if (!g_core->io_service)
-    // {
-    //     return IN_MissingComponent;
-    // }
-
-    if (!g_core->log_trace)
-    {
-        g_core->log_trace = log_dummy;
-    }
-    if (!g_core->log_info)
-    {
-        g_core->log_info = log_dummy;
-    }
-    if (!g_core->log_warn)
-    {
-        g_core->log_warn = log_dummy;
-    }
-    if (!g_core->log_error)
-    {
-        g_core->log_error = log_dummy;
-    }
-
+    
     g_ctx.rdram = rdram;
     g_ctx.rdram_register = &rdram_register;
     g_ctx.pi_register = &pi_register;

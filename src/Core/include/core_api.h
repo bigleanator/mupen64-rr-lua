@@ -78,79 +78,77 @@ extern "C"
     struct core_params
     {
         /**
-         * \brief The core's configuration.
+         * \brief A pointer to the core's configuration. Must be valid for the entire lifetime of the core.
          */
         core_cfg *cfg;
-
-        /**
-         * \brief An IIOHelperService implementation.
-         */
-        // PlatformService *io_service;
 
         /**
          * \brief The core callbacks.
          */
         core_callbacks callbacks;
 
+        /**
+         * \brief The controllers.
+         */
         core_controller controls[4]{};
 
         /**
          * \brief Logs the specified message at the trace level.
          */
-        void (*log_trace)(std::string_view);
+        std::function<void(std::string_view)> log_trace = [](auto &&...) {};
 
         /**
          * \brief Logs the specified message at the info level.
          */
-        void (*log_info)(std::string_view);
+        std::function<void(std::string_view)> log_info = [](auto &&...) {};
 
         /**
          * \brief Logs the specified message at the warning level.
          */
-        void (*log_warn)(std::string_view);
+        std::function<void(std::string_view)> log_warn = [](auto &&...) {};
 
         /**
          * \brief Logs the specified message at the error level.
          */
-        void (*log_error)(std::string_view);
+        std::function<void(std::string_view)> log_error = [](auto &&...) {};
 
         /**
          * \brief Loads the plugins specified by the config paths.
          * \return Whether the plugins were loaded successfully.
          */
-        bool (*load_plugins)(void);
+        std::function<bool(void)> load_plugins;
 
         /**
          * \brief Called after load_plugins, this function loads plugin functions into plugin_funcs and calls the
          * "initiate" family of functions for all plugins. \remark This function must be infallible.
          */
-        void (*initiate_plugins)(void);
+        std::function<void(void)> initiate_plugins;
 
         /**
          * \brief Executes a function asynchronously.
          * \param func The function to be executed.
          */
-        void (*submit_task)(const std::function<void()> &func);
+        std::function<void(const std::function<void()> &)> submit_task;
 
         /**
          * \brief Gets the directory in which savestates and persistent game saves should be stored.
          */
-        std::filesystem::path (*get_saves_directory)(void);
+        std::function<std::filesystem::path(void)> get_saves_directory;
 
         /**
          * \brief Gets the directory in which VCR backups should be stored.
          */
-        std::filesystem::path (*get_backups_directory)(void);
+        std::function<std::filesystem::path(void)> get_backups_directory;
 
         /**
          * \brief Gets the path to the summercart directory.
          */
-        std::filesystem::path (*get_summercart_directory)(void);
+        std::function<std::filesystem::path(void)> get_summercart_directory;
 
         /**
          * \brief Gets the path to the summercart vhd.
          */
-        std::filesystem::path (*get_summercart_path)(void);
+        std::function<std::filesystem::path(void)> get_summercart_path;
 
         /**
          * Prompts the user to select from a provided collection of choices.
@@ -194,14 +192,14 @@ extern "C"
         /**
          * \brief Updates the screen.
          */
-        void (*update_screen)(void);
+        std::function<void(void)> update_screen;
 
         /**
          * \brief Writes the MGE compositor's current emulation front buffer into the destination buffer.
          * \param buffer The video buffer. Must be at least of size <c>width * height * 3</c>, as acquired by
          * <c>plugin_funcs.get_video_size</c>.
          */
-        void (*copy_video)(void *buffer);
+        std::function<void(void *buffer)> copy_video;
 
         /**
          * \brief Finds the first rom from the available ROM list which matches the predicate.
@@ -213,14 +211,14 @@ extern "C"
         /**
          * \return Whether MGE functionality is currently available.
          */
-        bool (*mge_available)(void);
+        std::function<bool(void)> mge_available;
 
         /**
          * \brief Fills the screen with the specified data.
          * The size of the buffer is determined by the resolution returned by the get_video_size (MGE) or readScreen
          * (Non-MGE) functions. Note that the buffer format is 24bpp.
          */
-        void (*load_screen)(void *data);
+        std::function<void(void *data)> load_screen;
 
         /**
          * \brief Gets the plugin names.
@@ -231,14 +229,14 @@ extern "C"
          * plugin name buffer. Destination must be at least 64 bytes large. If null, no data will be written. \note Must
          * be called after loading plugins and their globals.
          */
-        void (*get_plugin_names)(char *video, char *audio, char *input, char *rsp);
+        std::function<void(char *video, char *audio, char *input, char *rsp)> get_plugin_names;
 
         /**
          * \brief The savestate callback wrapper, which is invoked prior to individual savestate callbacks.
          * Can be used to display generic error information.
          */
-        void (*st_pre_callback)(const core_st_callback_info &info, const std::vector<uint8_t> &buffer) =
-            [](const core_st_callback_info &, const std::vector<uint8_t> &) {};
+        std::function<void(const core_st_callback_info &info, const std::vector<uint8_t> &buffer)> st_pre_callback =
+            [](auto &&...) {};
 
         PROCESSDLIST video_process_dlist;
         PROCESSRDPLIST video_process_rdp_list;
@@ -473,7 +471,7 @@ extern "C"
          * \return The operation result
          */
         std::function<core_result()> vcr_continue_recording;
-        
+
         /**
          * \brief Replaces the author and description information of a movie
          * \param path The movie's path

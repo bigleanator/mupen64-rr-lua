@@ -1034,7 +1034,6 @@ static void CALLBACK invalidate_callback(UINT, UINT, DWORD_PTR, DWORD_PTR, DWORD
 static core_result init_core()
 {
     g_main_ctx.core.cfg = &g_config.core;
-    // g_main_ctx.core.io_service = &g_main_ctx.io_service;
     g_main_ctx.core.callbacks = {};
     g_main_ctx.core.callbacks.vi = [] {
         LuaCallbacks::call_interval();
