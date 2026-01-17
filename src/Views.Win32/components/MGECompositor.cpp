@@ -108,7 +108,15 @@ static void create_d3d(const HWND hwnd)
     HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, feature_levels,
                                                ARRAYSIZE(feature_levels), D3D11_SDK_VERSION, &scdesc, &swap_raw,
                                                &device_raw, nullptr, &context_raw);
-    RT_ASSERT_HR(hr, L"D3D11CreateDeviceAndSwapChain");
+    if (FAILED(hr))
+    {
+        // Can happen on wine or older hardware, try WARP.
+        g_view_logger->warn("D3D11CreateDeviceAndSwapChain failed, trying WARP...");
+        hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_WARP, nullptr, flags, feature_levels,
+                                           ARRAYSIZE(feature_levels), D3D11_SDK_VERSION, &scdesc, &swap_raw,
+                                           &device_raw, nullptr, &context_raw);
+        RT_ASSERT_HR(hr, L"D3D11CreateDeviceAndSwapChain second chance fail");
+    }
 
     mge_context.device.Attach(device_raw);
     mge_context.context.Attach(context_raw);
